@@ -8,8 +8,23 @@ Open `index.html` in any modern browser. No installation or build step is requir
 
 ## Deploy to Cloudflare Pages
 
-Create a Pages project and upload this folder directly. Because the site is static,
-there is no build command and the output directory is the repository root.
+1. Sign in at `https://dash.cloudflare.com`.
+2. Open **Workers & Pages**.
+3. Select **Create application** > **Pages** > **Connect to Git**.
+4. Authorize GitHub and choose `KyleJBonachita/rld-resort-webpage`.
+5. Use these deployment settings:
+   - Production branch: `main`
+   - Framework preset: `None`
+   - Build command: leave blank (use `exit 0` if the dashboard requires a value)
+   - Build output directory: `/`
+   - Root directory: leave blank
+6. Select **Save and Deploy**.
+
+Cloudflare will provide an address ending in `.pages.dev`. Every new push to `main`
+will automatically update the live site.
+
+To add a purchased domain later, open the Pages project, choose **Custom domains**,
+select **Set up a domain**, and follow the DNS prompts.
 
 ## Contact details
 
@@ -19,4 +34,3 @@ Customer links and the reservation form are configured in `script.js`:
 - WhatsApp: `+63 997 744 8260`
 - Email: `rldresort775@gmail.com`
 - Location: Pulangyuta, Siquijor
-

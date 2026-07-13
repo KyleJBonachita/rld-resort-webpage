@@ -12,6 +12,11 @@ const navigation = document.querySelector("#primary-navigation");
 const form = document.querySelector("#reservation-form");
 const toast = document.querySelector("#toast");
 const dateInput = form.querySelector('input[name="date"]');
+const gallery = document.querySelector("#resort-gallery");
+const lightbox = document.querySelector("#gallery-lightbox");
+const lightboxImage = document.querySelector("#lightbox-image");
+const lightboxCaption = document.querySelector("#lightbox-caption");
+const lightboxClose = document.querySelector(".lightbox-close");
 let toastTimer;
 
 document.querySelector("#current-year").textContent = new Date().getFullYear();
@@ -69,6 +74,42 @@ document.addEventListener("keydown", (event) => {
 
 window.addEventListener("scroll", updateHeader, { passive: true });
 updateHeader();
+
+gallery.addEventListener("click", (event) => {
+  const button = event.target.closest(".gallery-open");
+  if (!button) return;
+
+  const previewImage = button.querySelector("img");
+  const fullImage = button.dataset.full;
+  const caption = button.dataset.caption || previewImage.alt;
+
+  if (typeof lightbox.showModal !== "function") {
+    window.open(fullImage, "_blank", "noopener");
+    return;
+  }
+
+  lightboxImage.src = fullImage;
+  lightboxImage.alt = previewImage.alt;
+  lightboxCaption.textContent = caption;
+  lightbox.showModal();
+});
+
+lightboxClose.addEventListener("click", () => lightbox.close());
+
+lightbox.addEventListener("click", (event) => {
+  const bounds = lightbox.getBoundingClientRect();
+  const clickedOutside =
+    event.clientX < bounds.left ||
+    event.clientX > bounds.right ||
+    event.clientY < bounds.top ||
+    event.clientY > bounds.bottom;
+
+  if (clickedOutside) lightbox.close();
+});
+
+lightbox.addEventListener("close", () => {
+  lightboxImage.removeAttribute("src");
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
