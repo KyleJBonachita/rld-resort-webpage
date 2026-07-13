@@ -513,11 +513,27 @@ textarea:focus-visible {
   color: var(--white);
 }
 
+.gallery-heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
+.button-gallery {
+  min-height: 46px;
+  color: var(--forest-deep);
+  background: #ffd17a;
+}
+
+.button-gallery:hover {
+  background: #f4bf5c;
+}
+
 .resort-gallery {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-auto-rows: 150px;
-  grid-auto-flow: dense;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr;
+  grid-template-rows: 300px 300px;
   gap: 12px;
 }
 
@@ -531,8 +547,6 @@ textarea:focus-visible {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 4px;
   background: #0a3532;
-  grid-column: span 3;
-  grid-row: span 2;
 }
 
 .gallery-open {
@@ -598,39 +612,27 @@ textarea:focus-visible {
 }
 
 .gallery-item:nth-child(1) {
-  grid-column: span 5;
-  grid-row: span 3;
+  grid-column: 1;
+  grid-row: 1 / 3;
 }
 
 .gallery-item:nth-child(2) {
-  grid-column: span 4;
-  grid-row: span 3;
+  grid-column: 2;
+  grid-row: 1 / 3;
 }
 
 .gallery-item:nth-child(3) {
-  grid-column: span 3;
-  grid-row: span 1;
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .gallery-item:nth-child(4) {
-  grid-column: span 3;
-  grid-row: span 2;
+  grid-column: 3;
+  grid-row: 2;
 }
 
-.gallery-item:nth-child(5),
-.gallery-item:nth-child(7),
-.gallery-item:nth-child(17) {
-  grid-column: span 6;
-  grid-row: span 2;
-}
-
-.gallery-item:nth-child(6),
-.gallery-item:nth-child(11),
-.gallery-item:nth-child(12),
-.gallery-item:nth-child(14),
-.gallery-item:nth-child(15),
-.gallery-item:nth-child(16) {
-  grid-row: span 3;
+.gallery-item:nth-child(n + 5) {
+  display: none;
 }
 
 .rooms-section {
@@ -1002,10 +1004,10 @@ fieldset legend {
 
 .location-heading {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-columns: 0.9fr 1.1fr;
   align-items: end;
-  gap: 72px;
-  margin-bottom: 42px;
+  gap: 80px;
+  margin-bottom: 36px;
 }
 
 .location-heading h2 {
@@ -1014,24 +1016,27 @@ fieldset legend {
 
 .location-media {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(22, 48, 45, 0.18);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 18px 42px rgba(7, 45, 43, 0.12);
 }
 
 .location-gate {
   position: relative;
-  min-height: 500px;
+  min-height: 460px;
   margin: 0;
   overflow: hidden;
-  border-radius: 8px;
   background: var(--forest-deep);
-  box-shadow: var(--shadow);
 }
 
 .location-gate img {
   width: 100%;
   height: 100%;
-  min-height: 500px;
+  min-height: 460px;
   object-fit: cover;
 }
 
@@ -1055,18 +1060,17 @@ fieldset legend {
 }
 
 .map-embed {
-  min-height: 500px;
+  min-height: 460px;
   overflow: hidden;
-  border-radius: 8px;
+  border-left: 1px solid rgba(22, 48, 45, 0.16);
   background: #dfe8e2;
-  box-shadow: var(--shadow);
 }
 
 .map-embed iframe {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 500px;
+  min-height: 460px;
   border: 0;
 }
 
@@ -1083,9 +1087,9 @@ fieldset legend {
 }
 
 .lightbox {
-  width: min(1040px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 24px));
   max-width: none;
-  max-height: 92vh;
+  max-height: 94vh;
   padding: 0;
   overflow: hidden;
   border: 0;
@@ -1095,24 +1099,108 @@ fieldset legend {
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.46);
 }
 
+.lightbox[open] {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+}
+
 .lightbox::backdrop {
   background: rgba(1, 16, 15, 0.84);
   backdrop-filter: blur(5px);
 }
 
-.lightbox img {
-  display: block;
-  width: 100%;
-  max-height: 80vh;
-  object-fit: contain;
+.lightbox-stage {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  place-items: center;
   background: #031413;
 }
 
-.lightbox p {
+.lightbox-stage > img {
+  display: block;
+  width: 100%;
+  height: min(68vh, 720px);
+  object-fit: contain;
+}
+
+.lightbox-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lightbox-details p {
   margin: 0;
-  padding: 13px 56px 15px 18px;
   color: rgba(255, 255, 255, 0.82);
   font-size: 13px;
+}
+
+.lightbox-details span {
+  flex: 0 0 auto;
+  color: #ffd17a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+  color: var(--white);
+  background: rgba(3, 20, 19, 0.7);
+  font-size: 19px;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.lightbox-prev {
+  left: 14px;
+}
+
+.lightbox-next {
+  right: 14px;
+}
+
+.lightbox-thumbnails {
+  display: flex;
+  padding: 10px 12px 12px;
+  overflow-x: auto;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+}
+
+.lightbox-thumbnail {
+  width: 76px;
+  height: 58px;
+  padding: 2px;
+  flex: 0 0 76px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.lightbox-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lightbox-thumbnail.active {
+  border-color: #ffd17a;
 }
 
 .lightbox-close {
@@ -1354,46 +1442,22 @@ details p {
     align-items: start;
   }
 
+  .gallery-heading-actions {
+    justify-content: flex-start;
+  }
+
   .experience-grid {
     grid-template-columns: 1fr;
   }
 
   .resort-gallery {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-auto-rows: 130px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, 270px);
   }
 
-  .gallery-item {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .gallery-item:nth-child(1),
-  .gallery-item:nth-child(2) {
-    grid-column: span 3;
-    grid-row: span 3;
-  }
-
-  .gallery-item:nth-child(3),
-  .gallery-item:nth-child(4) {
-    grid-column: span 3;
-    grid-row: span 2;
-  }
-
-  .gallery-item:nth-child(5),
-  .gallery-item:nth-child(7),
-  .gallery-item:nth-child(17) {
-    grid-column: span 4;
-    grid-row: span 2;
-  }
-
-  .gallery-item:nth-child(6),
-  .gallery-item:nth-child(11),
-  .gallery-item:nth-child(12),
-  .gallery-item:nth-child(14),
-  .gallery-item:nth-child(15),
-  .gallery-item:nth-child(16) {
-    grid-row: span 3;
+  .gallery-item:nth-child(-n + 4) {
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .experience-card {
@@ -1424,6 +1488,15 @@ details p {
   .location-heading,
   .location-media {
     max-width: 720px;
+  }
+
+  .location-media {
+    gap: 0;
+  }
+
+  .map-embed {
+    border-top: 1px solid rgba(22, 48, 45, 0.16);
+    border-left: 0;
   }
 
   .celebration-image {
@@ -1511,39 +1584,20 @@ details p {
   }
 
   .resort-gallery {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: 145px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 270px 360px 210px 210px;
     gap: 8px;
   }
 
-  .gallery-item {
-    grid-column: span 1;
-    grid-row: span 1;
+  .gallery-item:nth-child(-n + 4) {
+    grid-column: 1;
+    grid-row: auto;
   }
 
-  .gallery-item:nth-child(1),
-  .gallery-item:nth-child(5),
-  .gallery-item:nth-child(7),
-  .gallery-item:nth-child(17) {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .gallery-item:nth-child(2),
-  .gallery-item:nth-child(6),
-  .gallery-item:nth-child(11),
-  .gallery-item:nth-child(12),
-  .gallery-item:nth-child(14),
-  .gallery-item:nth-child(15),
-  .gallery-item:nth-child(16) {
-    grid-column: span 1;
-    grid-row: span 2;
-  }
-
-  .gallery-item:nth-child(3),
-  .gallery-item:nth-child(4) {
-    grid-column: span 1;
-    grid-row: span 1;
+  .gallery-heading-actions {
+    display: grid;
+    width: 100%;
+    justify-items: start;
   }
 
   .room-card {
@@ -1585,7 +1639,35 @@ details p {
 
   .location-gate,
   .location-gate img {
-    min-height: 340px;
+    min-height: 300px;
+  }
+
+  .location-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .lightbox-stage > img {
+    height: 58vh;
+  }
+
+  .lightbox-nav {
+    width: 40px;
+    height: 40px;
+  }
+
+  .lightbox-prev {
+    left: 8px;
+  }
+
+  .lightbox-next {
+    right: 8px;
+  }
+
+  .lightbox-thumbnail {
+    width: 64px;
+    height: 50px;
+    flex-basis: 64px;
   }
 
   .room-card-copy {

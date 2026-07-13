@@ -156,14 +156,19 @@
             <p class="eyebrow">The real RLD Resort</p>
             <h2 id="gallery-title">A place that feels easy from the moment you arrive.</h2>
           </div>
-          <a
-            class="text-link"
-            href="https://www.facebook.com/profile.php?id=61569858206413"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            More on Facebook <span aria-hidden="true">&rarr;</span>
-          </a>
+          <div class="gallery-heading-actions">
+            <button class="button button-gallery" id="open-full-gallery" type="button">
+              View all 16 photos
+            </button>
+            <a
+              class="text-link"
+              href="https://www.facebook.com/profile.php?id=61569858206413"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Facebook <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
         </div>
 
         <div class="page-shell resort-gallery" id="resort-gallery">
@@ -535,8 +540,16 @@
     </div>
     <dialog class="lightbox" id="gallery-lightbox" aria-labelledby="lightbox-caption">
       <button class="lightbox-close" type="button" aria-label="Close full-size image">&times;</button>
-      <img id="lightbox-image" alt="" />
-      <p id="lightbox-caption"></p>
+      <div class="lightbox-stage">
+        <button class="lightbox-nav lightbox-prev" type="button" aria-label="Previous photo">&larr;</button>
+        <img id="lightbox-image" alt="" />
+        <button class="lightbox-nav lightbox-next" type="button" aria-label="Next photo">&rarr;</button>
+      </div>
+      <div class="lightbox-details">
+        <p id="lightbox-caption"></p>
+        <span id="lightbox-count" aria-live="polite"></span>
+      </div>
+      <div class="lightbox-thumbnails" id="lightbox-thumbnails" aria-label="All resort photos"></div>
     </dialog>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="script.js"></script>

@@ -16,8 +16,23 @@ const gallery = document.querySelector("#resort-gallery");
 const lightbox = document.querySelector("#gallery-lightbox");
 const lightboxImage = document.querySelector("#lightbox-image");
 const lightboxCaption = document.querySelector("#lightbox-caption");
+const lightboxCount = document.querySelector("#lightbox-count");
+const lightboxThumbnails = document.querySelector("#lightbox-thumbnails");
 const lightboxClose = document.querySelector(".lightbox-close");
+const lightboxPrev = document.querySelector(".lightbox-prev");
+const lightboxNext = document.querySelector(".lightbox-next");
+const openFullGallery = document.querySelector("#open-full-gallery");
+const galleryButtons = [...gallery.querySelectorAll(".gallery-open")];
+const galleryItems = galleryButtons.map((button) => {
+  const image = button.querySelector("img");
+  return {
+    src: button.dataset.full,
+    alt: image.alt,
+    caption: button.dataset.caption || image.alt,
+  };
+});
 let toastTimer;
+let activeGalleryIndex = 0;
 
 document.querySelector("#current-year").textContent = new Date().getFullYear();
 dateInput.min = new Date().toISOString().split("T")[0];
@@ -70,30 +85,72 @@ navigation.querySelectorAll("a").forEach((link) => link.addEventListener("click"
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeMenu();
+  if (!lightbox.open) return;
+  if (event.key === "ArrowLeft") showGalleryPhoto(activeGalleryIndex - 1);
+  if (event.key === "ArrowRight") showGalleryPhoto(activeGalleryIndex + 1);
 });
 
 window.addEventListener("scroll", updateHeader, { passive: true });
 updateHeader();
 
-gallery.addEventListener("click", (event) => {
-  const button = event.target.closest(".gallery-open");
-  if (!button) return;
+function showGalleryPhoto(index) {
+  activeGalleryIndex = (index + galleryItems.length) % galleryItems.length;
+  const item = galleryItems[activeGalleryIndex];
 
-  const previewImage = button.querySelector("img");
-  const fullImage = button.dataset.full;
-  const caption = button.dataset.caption || previewImage.alt;
+  lightboxImage.src = item.src;
+  lightboxImage.alt = item.alt;
+  lightboxCaption.textContent = item.caption;
+  lightboxCount.textContent = `${activeGalleryIndex + 1} / ${galleryItems.length}`;
 
+  const thumbnails = [...lightboxThumbnails.querySelectorAll(".lightbox-thumbnail")];
+  thumbnails.forEach((thumbnail, thumbnailIndex) => {
+    const isActive = thumbnailIndex === activeGalleryIndex;
+    thumbnail.classList.toggle("active", isActive);
+    thumbnail.setAttribute("aria-current", isActive ? "true" : "false");
+  });
+
+  const activeThumbnail = thumbnails[activeGalleryIndex];
+  if (activeThumbnail) {
+    lightboxThumbnails.scrollTo({
+      left: activeThumbnail.offsetLeft - lightboxThumbnails.clientWidth / 2 + activeThumbnail.offsetWidth / 2,
+      behavior: "smooth",
+    });
+  }
+}
+
+function openGallery(index = 0) {
   if (typeof lightbox.showModal !== "function") {
-    window.open(fullImage, "_blank", "noopener");
+    window.open(galleryItems[index].src, "_blank", "noopener");
     return;
   }
 
-  lightboxImage.src = fullImage;
-  lightboxImage.alt = previewImage.alt;
-  lightboxCaption.textContent = caption;
   lightbox.showModal();
+  showGalleryPhoto(index);
+}
+
+galleryItems.forEach((item, index) => {
+  const button = document.createElement("button");
+  const image = document.createElement("img");
+  button.className = "lightbox-thumbnail";
+  button.type = "button";
+  button.setAttribute("aria-label", `View photo ${index + 1}: ${item.caption}`);
+  image.src = item.src;
+  image.alt = "";
+  image.loading = "lazy";
+  button.appendChild(image);
+  button.addEventListener("click", () => showGalleryPhoto(index));
+  lightboxThumbnails.appendChild(button);
 });
 
+gallery.addEventListener("click", (event) => {
+  const button = event.target.closest(".gallery-open");
+  if (!button) return;
+  openGallery(galleryButtons.indexOf(button));
+});
+
+openFullGallery.addEventListener("click", () => openGallery(0));
+lightboxPrev.addEventListener("click", () => showGalleryPhoto(activeGalleryIndex - 1));
+lightboxNext.addEventListener("click", () => showGalleryPhoto(activeGalleryIndex + 1));
 lightboxClose.addEventListener("click", () => lightbox.close());
 
 lightbox.addEventListener("click", (event) => {
