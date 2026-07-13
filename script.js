@@ -5,11 +5,15 @@ const CONTACT = {
   emailAddress: "rldresort775@gmail.com",
   maps: "https://maps.app.goo.gl/e8auYz2ATanAsXaa8",
 };
+const FORM_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT.emailAddress}`;
 
 const header = document.querySelector("#site-header");
 const navToggle = document.querySelector(".nav-toggle");
 const navigation = document.querySelector("#primary-navigation");
 const form = document.querySelector("#reservation-form");
+const submitButton = form.querySelector(".submit-button");
+const submitLabel = form.querySelector(".submit-label");
+const channelInputs = [...form.querySelectorAll('input[name="channel"]')];
 const toast = document.querySelector("#toast");
 const dateInput = form.querySelector('input[name="date"]');
 const gallery = document.querySelector("#resort-gallery");
@@ -56,6 +60,45 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 4200);
 }
 
+function updateSubmitLabel() {
+  const channel = form.querySelector('input[name="channel"]:checked').value;
+  const labels = {
+    messenger: "Continue to Messenger",
+    whatsapp: "Continue to WhatsApp",
+    email: "Send inquiry by email",
+  };
+  submitLabel.textContent = labels[channel];
+}
+
+async function sendEmailInquiry(data, message) {
+  const response = await fetch(FORM_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      name: data.get("name"),
+      email: data.get("email"),
+      phone: data.get("phone") || "Not provided",
+      preferred_date: data.get("date"),
+      visit_type: data.get("visit"),
+      number_of_guests: data.get("guests"),
+      notes: data.get("notes") || "None",
+      message,
+      _replyto: data.get("email"),
+      _subject: `New RLD Resort reservation inquiry from ${data.get("name")}`,
+      _template: "table",
+      _honey: data.get("_honey") || "",
+    }),
+  });
+
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.success === false || result.success === "false") {
+    throw new Error(result.message || "Unable to send inquiry");
+  }
+}
+
 async function copyInquiry(message) {
   try {
     await navigator.clipboard.writeText(message);
@@ -92,6 +135,8 @@ document.addEventListener("keydown", (event) => {
 
 window.addEventListener("scroll", updateHeader, { passive: true });
 updateHeader();
+channelInputs.forEach((input) => input.addEventListener("change", updateSubmitLabel));
+updateSubmitLabel();
 
 function showGalleryPhoto(index) {
   activeGalleryIndex = (index + galleryItems.length) % galleryItems.length;
@@ -176,6 +221,8 @@ form.addEventListener("submit", async (event) => {
     "Hello RLD Resort! I would like to request a reservation.",
     "",
     `Name: ${data.get("name")}`,
+    `Email: ${data.get("email")}`,
+    `Mobile number: ${data.get("phone") || "Not provided"}`,
     `Preferred date: ${data.get("date")}`,
     `Type of visit: ${data.get("visit")}`,
     `Number of guests: ${data.get("guests")}`,
@@ -192,18 +239,30 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (channel === "email" && CONTACT.emailAddress) {
-    window.location.href = `mailto:${CONTACT.emailAddress}?subject=${encodeURIComponent("Reservation inquiry for RLD Resort")}&body=${encodeURIComponent(message)}`;
+  if (channel === "email") {
+    submitButton.disabled = true;
+    submitLabel.textContent = "Sending inquiry...";
+
+    try {
+      await sendEmailInquiry(data, message);
+      form.reset();
+      updateSubmitLabel();
+      showToast("Reservation inquiry sent directly to RLD Resort.");
+    } catch {
+      const whatsappInput = form.querySelector('input[value="whatsapp"]');
+      whatsappInput.checked = true;
+      updateSubmitLabel();
+      showToast("Email delivery is unavailable right now. Your details are preserved; continue through WhatsApp instead.");
+    } finally {
+      submitButton.disabled = false;
+    }
     return;
   }
 
   const copied = await copyInquiry(message);
-  const missingChannel = channel === "whatsapp" || channel === "email";
-  const notice = missingChannel
-    ? `${channel === "whatsapp" ? "WhatsApp" : "Email"} details have not been added yet. Opening Messenger instead${copied ? "; your inquiry is copied and ready to paste." : "."}`
-    : copied
-      ? "Your inquiry is copied. Paste it into Messenger to send."
-      : "Opening Messenger so you can send your inquiry.";
+  const notice = copied
+    ? "Your inquiry is copied. Paste it into Messenger, then press Send."
+    : "Opening Messenger so you can review and send your inquiry.";
 
   showToast(notice);
   window.setTimeout(() => window.open(CONTACT.messenger, "_blank", "noopener"), 350);

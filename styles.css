@@ -252,6 +252,12 @@ h3 {
   transform: translateY(-2px);
 }
 
+.button:disabled {
+  opacity: 0.62;
+  cursor: wait;
+  transform: none;
+}
+
 .button:focus-visible,
 a:focus-visible,
 summary:focus-visible,
@@ -865,11 +871,20 @@ textarea:focus-visible {
 }
 
 .reservation-form {
+  position: relative;
   padding: 38px;
   color: var(--ink);
   background: var(--paper);
   border-radius: 8px;
   box-shadow: var(--shadow);
+}
+
+.honeypot-field {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
 }
 
 .form-heading {
@@ -1003,15 +1018,17 @@ fieldset legend {
 }
 
 .location-heading {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  align-items: end;
-  gap: 80px;
+  display: block;
+  max-width: 760px;
   margin-bottom: 36px;
 }
 
 .location-heading h2 {
-  margin-bottom: 0;
+  margin-bottom: 18px;
+}
+
+.location-heading .location-copy {
+  margin-top: 0;
 }
 
 .location-media {
@@ -1075,7 +1092,8 @@ fieldset legend {
 }
 
 .location-copy p:not(.eyebrow) {
-  max-width: 430px;
+  max-width: 680px;
+  margin-bottom: 24px;
   color: var(--ink-soft);
 }
 

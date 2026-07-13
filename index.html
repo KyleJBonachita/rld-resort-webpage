@@ -375,6 +375,10 @@
           </div>
 
           <form class="reservation-form" id="reservation-form">
+            <label class="honeypot-field" aria-hidden="true">
+              Leave this field empty
+              <input type="text" name="_honey" tabindex="-1" autocomplete="off" />
+            </label>
             <div class="form-heading">
               <p>Reservation inquiry</p>
               <span>No payment required</span>
@@ -388,6 +392,17 @@
               <label>
                 Preferred date
                 <input type="date" name="date" required />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                Email address
+                <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+              </label>
+              <label>
+                Mobile number
+                <input type="tel" name="phone" autocomplete="tel" placeholder="e.g. +63 912 345 6789" />
               </label>
             </div>
 
@@ -418,14 +433,15 @@
               <div class="channel-options">
                 <label><input type="radio" name="channel" value="messenger" checked /> Messenger</label>
                 <label><input type="radio" name="channel" value="whatsapp" /> WhatsApp</label>
-                <label><input type="radio" name="channel" value="email" /> Email</label>
+                <label><input type="radio" name="channel" value="email" /> Direct email</label>
               </div>
             </fieldset>
 
             <button class="button button-primary submit-button" type="submit">
-              Prepare my inquiry <span aria-hidden="true">&rarr;</span>
+              <span class="submit-label">Continue to Messenger</span>
+              <span aria-hidden="true">&rarr;</span>
             </button>
-            <p class="form-note">Your details stay on your device until you choose to send them.</p>
+            <p class="form-note">Your details are used only to respond to this reservation inquiry.</p>
           </form>
         </div>
       </section>

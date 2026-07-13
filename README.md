@@ -34,3 +34,13 @@ Customer links and the reservation form are configured in `script.js`:
 - WhatsApp: `+63 997 744 8260`
 - Email: `rldresort775@gmail.com`
 - Location: Pulangyuta, Siquijor
+
+## Reservation delivery
+
+- **Direct email** submits from the page through FormSubmit to
+  `rldresort775@gmail.com`. Submit the form once on the deployed site, then click
+  the activation link FormSubmit sends to that inbox. This is required only once.
+- **WhatsApp** opens a chat with the completed inquiry prefilled; the customer
+  reviews it and presses Send.
+- **Messenger** copies the completed inquiry and opens the RLD Resort chat; the
+  customer pastes it and presses Send.
