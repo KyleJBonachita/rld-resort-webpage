@@ -1,3 +1,10 @@
 # Previous generated placeholder; the live page uses real RLD Resort media.
 images/resort-hero.png
 
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
