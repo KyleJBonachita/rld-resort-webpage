@@ -9,6 +9,7 @@
   --leaf: #61835a;
   --paper: #fffdf8;
   --cream: #f5efe3;
+  --mist: #eaf2ef;
   --line: rgba(22, 48, 45, 0.16);
   --white: #ffffff;
   --shadow: 0 20px 50px rgba(7, 45, 43, 0.14);
@@ -646,6 +647,7 @@ textarea:focus-visible {
   grid-template-columns: 1.35fr 0.65fr;
   align-items: stretch;
   gap: 0;
+  height: clamp(420px, 40vw, 520px);
   margin-top: 18px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -655,9 +657,10 @@ textarea:focus-visible {
 
 .gallery-video-feature video {
   display: block;
+  min-width: 0;
   width: 100%;
   height: 100%;
-  min-height: 360px;
+  min-height: 0;
   object-fit: contain;
   background: #031413;
 }
@@ -1056,7 +1059,7 @@ fieldset legend {
 }
 
 .location-section {
-  background: var(--cream);
+  background: var(--mist);
 }
 
 .location-heading {
@@ -1512,6 +1515,11 @@ details p {
 
   .gallery-video-feature {
     grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .gallery-video-feature video {
+    height: clamp(380px, 62vw, 500px);
   }
 
   .gallery-video-copy {
@@ -1675,7 +1683,7 @@ details p {
   }
 
   .gallery-video-feature video {
-    min-height: 250px;
+    height: 420px;
   }
 
   .gallery-video-copy {
