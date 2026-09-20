@@ -34,46 +34,52 @@ def draw_spaced_text(draw, center_x, y, text, font, fill, tracking):
 
 
 def create_transparent_logo():
-    """Restore the supplied badge and correct only its location spelling."""
+    """Build a balanced, print-ready badge around the supplied resort artwork."""
     with Image.open(LOGO_SOURCE_PATH) as source:
         source = source.convert("RGB")
-        # The white oval spans x=97..402 and y=70..429 in the source.
-        # Keep a uniform six-pixel terracotta margin outside that exact outline.
-        original_badge = source.crop((91, 64, 408, 435))
+        artwork = source.crop((145, 132, 355, 304))
 
-    logo_width = 1500
-    logo_size = (
-        logo_width,
-        round(logo_width * original_badge.height / original_badge.width),
-    )
-    original_badge = original_badge.resize(logo_size, Image.Resampling.LANCZOS)
-    line_mask = original_badge.convert("L").point(
+    artwork = artwork.resize((920, 753), Image.Resampling.LANCZOS)
+    artwork_mask = artwork.convert("L").point(
         lambda value: max(0, min(255, (value - 135) * 3))
     )
-    line_mask = line_mask.filter(ImageFilter.GaussianBlur(radius=0.6))
-    mask_draw = ImageDraw.Draw(line_mask)
-    mask_draw.rectangle((460, 1100, 1040, 1405), fill=0)
+    artwork_mask = artwork_mask.filter(ImageFilter.GaussianBlur(radius=0.5))
+    artwork_layer = Image.new("RGBA", artwork.size, LOGO_CREAM)
+    artwork_layer.putalpha(artwork_mask)
 
-    logo = Image.new("RGBA", logo_size, (0, 0, 0, 0))
+    logo = Image.new("RGBA", (1600, 1850), (0, 0, 0, 0))
     draw = ImageDraw.Draw(logo)
     draw.ellipse(
-        (0, 0, logo.width - 1, logo.height - 1),
+        (24, 24, logo.width - 24, logo.height - 24),
         fill=LOGO_TERRACOTTA,
+        outline=LOGO_CREAM,
+        width=14,
     )
-    restored_lines = Image.new("RGBA", logo_size, LOGO_CREAM)
-    restored_lines.putalpha(line_mask)
-    logo.alpha_composite(restored_lines)
+    draw.ellipse(
+        (68, 68, logo.width - 68, logo.height - 68),
+        outline=LOGO_CREAM,
+        width=5,
+    )
 
-    location_font = ImageFont.truetype(str(FONT_DIR / "arial.ttf"), 68)
-    established_font = ImageFont.truetype(str(FONT_DIR / "arial.ttf"), 56)
+    brand_font = ImageFont.truetype(str(FONT_DIR / "GARA.TTF"), 238)
+    resort_font = ImageFont.truetype(str(FONT_DIR / "GARA.TTF"), 170)
+    location_font = ImageFont.truetype(str(FONT_DIR / "arial.ttf"), 58)
+    established_font = ImageFont.truetype(str(FONT_DIR / "arial.ttf"), 50)
+
+    draw_spaced_text(draw, 800, 105, "RLD", brand_font, LOGO_CREAM, 42)
+    logo.alpha_composite(artwork_layer, (340, 390))
+    draw_spaced_text(draw, 800, 1135, "RESORT", resort_font, LOGO_CREAM, 28)
+
+    divider_y = 1385
+    draw.line((330, divider_y, 690, divider_y), fill=LOGO_CREAM, width=5)
+    draw.line((910, divider_y, 1270, divider_y), fill=LOGO_CREAM, width=5)
+    draw.ellipse((782, divider_y - 18, 818, divider_y + 18), fill=LOGO_CREAM)
+
     draw_spaced_text(
-        draw, 750, 1125, "POLANGYUTA,", location_font, LOGO_CREAM, 7
+        draw, 800, 1430, "POLANGYUTA, SIQUIJOR", location_font, LOGO_CREAM, 6
     )
     draw_spaced_text(
-        draw, 750, 1225, "SIQUIJOR PH", location_font, LOGO_CREAM, 7
-    )
-    draw_spaced_text(
-        draw, 750, 1327, "EST. 2024", established_font, LOGO_CREAM, 6
+        draw, 800, 1538, "EST. 2024", established_font, LOGO_CREAM, 7
     )
     logo.save(LOGO_PATH, optimize=True)
 
