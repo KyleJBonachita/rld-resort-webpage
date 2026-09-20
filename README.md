@@ -46,6 +46,12 @@ Customer links and the reservation form are configured in `script.js`:
 Both codes open the direct Google review form for RLD Resort. Keep the white border
 around the code intact when placing it in a printed layout.
 
+### Printable review signs
+
+The `output/pdf` folder contains matching A5 and A4 review signs in both PDF and
+300 DPI PNG formats. Use the PDF for printing, select **Actual size** or **100%**,
+and laminate only after confirming the QR scans from the printed proof.
+
 ## Reservation delivery
 
 - **Direct email** submits from the page through FormSubmit to
