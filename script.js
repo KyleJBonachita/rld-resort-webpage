@@ -1,8 +1,8 @@
 const CONTACT = {
   facebook: "https://www.facebook.com/profile.php?id=61569858206413",
   messenger: "https://m.me/rld.resorts.siq",
-  whatsappNumber: "+639977448260",
-  emailAddress: "rldresort775@gmail.com",
+  whatsappNumber: "+639753769041",
+  emailAddress: "rldresort2024@gmail.com",
   maps: "https://maps.app.goo.gl/e8auYz2ATanAsXaa8",
 };
 const FORM_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT.emailAddress}`;
