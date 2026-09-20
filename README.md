@@ -1,6 +1,6 @@
 # RLD Resort Website
 
-A lightweight static landing page for RLD Resort in Pulangyuta, Siquijor.
+A lightweight static landing page for RLD Resort in Polangyuta, Siquijor.
 
 ## Local preview
 
@@ -33,8 +33,18 @@ Customer links and the reservation form are configured in `script.js`:
 - Messenger: `rld.resorts.siq`
 - WhatsApp and phone: `+63 975 376 9041`
 - Email: `rldresort2024@gmail.com`
-- Location: Pulangyuta, Siquijor
+- Location: Polangyuta, Siquijor
 - Google reviews: `https://search.google.com/local/writereview?placeid=ChIJi_JSLWUVqzMRvr3EvfNkwJM`
+
+## Google review QR
+
+- `images/rld-resort-google-review-qr.png` is a 1,824 x 1,824 px, 300 DPI file
+  for ordinary printing and social posts.
+- `images/rld-resort-google-review-qr.svg` is the recommended file for signs,
+  posters, and other large-format printing because it stays sharp at any size.
+
+Both codes open the direct Google review form for RLD Resort. Keep the white border
+around the code intact when placing it in a printed layout.
 
 ## Reservation delivery
 
