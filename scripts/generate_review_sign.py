@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from reportlab.lib.pagesizes import A4, A5
 from reportlab.pdfgen import canvas
 
@@ -9,10 +9,14 @@ ROOT = Path(__file__).resolve().parents[1]
 IMAGE_DIR = ROOT / "images"
 OUTPUT_DIR = ROOT / "output" / "pdf"
 
-SAMPLE_PATH = IMAGE_DIR / "sample.png"
+SAMPLE_PATH = IMAGE_DIR / "1.png"
 LOGO_SOURCE_PATH = IMAGE_DIR / "Resort-main-logo.jpg"
 LOGO_PATH = IMAGE_DIR / "rld-resort-logo-transparent.png"
 QR_PATH = IMAGE_DIR / "rld-resort-google-review-qr.png"
+FONT_DIR = Path("C:/Windows/Fonts")
+
+LOGO_TERRACOTTA = (166, 76, 44, 255)
+LOGO_CREAM = (250, 222, 204, 255)
 
 POSTERS = {
     "a5": ((1749, 2481), A5),
@@ -20,22 +24,57 @@ POSTERS = {
 }
 
 
+def draw_spaced_text(draw, center_x, y, text, font, fill, tracking):
+    widths = [draw.textlength(character, font=font) for character in text]
+    total_width = sum(widths) + tracking * (len(text) - 1)
+    cursor = center_x - total_width / 2
+    for character, width in zip(text, widths):
+        draw.text((cursor, y), character, font=font, fill=fill)
+        cursor += width + tracking
+
+
 def create_transparent_logo():
-    """Crop the supplied logo into a transparent oval without redrawing it."""
+    """Restore the supplied badge and correct only its location spelling."""
     with Image.open(LOGO_SOURCE_PATH) as source:
         source = source.convert("RGB")
-        logo = source.crop((88, 29, 412, 444)).convert("RGBA")
+        # The white oval spans x=97..402 and y=70..429 in the source.
+        # Keep a uniform six-pixel terracotta margin outside that exact outline.
+        original_badge = source.crop((91, 64, 408, 435))
 
-    scale = 4
-    logo = logo.resize(
-        (logo.width * scale, logo.height * scale),
-        Image.Resampling.LANCZOS,
+    logo_width = 1500
+    logo_size = (
+        logo_width,
+        round(logo_width * original_badge.height / original_badge.width),
     )
+    original_badge = original_badge.resize(logo_size, Image.Resampling.LANCZOS)
+    line_mask = original_badge.convert("L").point(
+        lambda value: max(0, min(255, (value - 135) * 3))
+    )
+    line_mask = line_mask.filter(ImageFilter.GaussianBlur(radius=0.6))
+    mask_draw = ImageDraw.Draw(line_mask)
+    mask_draw.rectangle((460, 1100, 1040, 1405), fill=0)
 
-    mask = Image.new("L", logo.size, 0)
-    draw = ImageDraw.Draw(mask)
-    draw.ellipse((0, 0, logo.width - 1, logo.height - 1), fill=255)
-    logo.putalpha(mask)
+    logo = Image.new("RGBA", logo_size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(logo)
+    draw.ellipse(
+        (0, 0, logo.width - 1, logo.height - 1),
+        fill=LOGO_TERRACOTTA,
+    )
+    restored_lines = Image.new("RGBA", logo_size, LOGO_CREAM)
+    restored_lines.putalpha(line_mask)
+    logo.alpha_composite(restored_lines)
+
+    location_font = ImageFont.truetype(str(FONT_DIR / "arial.ttf"), 68)
+    established_font = ImageFont.truetype(str(FONT_DIR / "arial.ttf"), 56)
+    draw_spaced_text(
+        draw, 750, 1125, "POLANGYUTA,", location_font, LOGO_CREAM, 7
+    )
+    draw_spaced_text(
+        draw, 750, 1225, "SIQUIJOR PH", location_font, LOGO_CREAM, 7
+    )
+    draw_spaced_text(
+        draw, 750, 1327, "EST. 2024", established_font, LOGO_CREAM, 6
+    )
     logo.save(LOGO_PATH, optimize=True)
 
 
